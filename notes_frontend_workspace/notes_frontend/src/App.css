@@ -5,6 +5,7 @@
   --primary: #1976d2;
   --secondary: #424242;
 
+  /* Light theme */
   --bg-primary: #ffffff;
   --bg-secondary: #f7f9fc;
   --divider: #e0e0e0;
@@ -12,10 +13,34 @@
   --text-primary: #24292f;
   --text-secondary: #757575;
   --note-list-bg: #f8fafd;
+  --editor-bg: #fff;
+  --editor-title-bg: #f5f6fa;
+  --editor-body-bg: #f9fafc;
+  --btn-cancel-bg: #fff;
+  --btn-cancel-color: var(--secondary);
+
   --sidebar-width: 300px;
   --btn-radius: 6px;
   --shadow: 0 2px 12px rgba(30, 34, 90, 0.04);
 }
+
+/* Dark Theme Variables override, applied via class */
+.dark-theme {
+  --bg-primary: #181a21;
+  --bg-secondary: #1b1e26;
+  --divider: #232634;
+  --border-color: #2b2c36;
+  --text-primary: #f6f6fa;
+  --text-secondary: #bcbcbc;
+  --note-list-bg: #1d2028;
+  --editor-bg: #1a1c23;
+  --editor-title-bg: #22232c;
+  --editor-body-bg: #191b22;
+  --btn-cancel-bg: #191b22;
+  --btn-cancel-color: var(--text-secondary);
+  --shadow: 0 2px 18px rgba(10, 13, 32, 0.13);
+}
+
 
 /* --- MAIN LAYOUT --- */
 .notes-app-wrapper {
@@ -25,6 +50,7 @@
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
+  transition: background 0.27s, color 0.2s;
 }
 
 .notes-header {
@@ -38,6 +64,36 @@
   padding: 0 36px 0 24px;
   box-shadow: var(--shadow);
   z-index: 5;
+}
+
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px 11px;
+  font-size: 1.3em;
+  color: var(--primary);
+  background-color: var(--editor-title-bg);
+  box-shadow: 0 1px 6px rgba(30, 34, 90, 0.04);
+  margin-right: 20px;
+  margin-left: 16px;
+  transition: background 0.18s, color 0.14s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus {
+  background: var(--accent);
+  color: #fff;
+}
+
+.dark-theme .theme-toggle-btn {
+  color: var(--accent);
+  background-color: var(--editor-title-bg);
 }
 
 .notes-app-title {
@@ -83,6 +139,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  transition: background 0.24s, color 0.18s;
 }
 
 .notes-list-title {
@@ -185,12 +242,13 @@
   flex-direction: column;
   max-width: 680px;
   margin: 0 auto;
-  background: #fff;
+  background: var(--editor-bg);
   border-radius: 9px;
   box-shadow: var(--shadow);
   border: 1.5px solid var(--divider);
   padding: 32px 36px 28px 36px;
   gap: 16px;
+  transition: background 0.23s, border 0.19s;
 }
 .notes-editor-title {
   font-size: 1.25rem;
@@ -201,8 +259,8 @@
   border-radius: var(--btn-radius);
   border: 1.4px solid var(--accent);
   outline: none;
-  background: #f5f6fa;
-  transition: border 0.18s;
+  background: var(--editor-title-bg);
+  transition: border 0.18s, background 0.18s;
 }
 .notes-editor-title:focus {
   border: 2.1px solid var(--primary);
@@ -214,10 +272,11 @@
   resize: vertical;
   border-radius: var(--btn-radius);
   border: 1.2px solid var(--accent);
-  background: #f9fafc;
+  background: var(--editor-body-bg);
   outline: none;
   margin-bottom: 11px;
-  transition: border 0.18s;
+  transition: border 0.18s, background 0.18s;
+  color: var(--text-primary);
 }
 .notes-editor-body:focus {
   border: 2px solid var(--primary);
@@ -241,8 +300,8 @@
   transition: background 0.2s;
 }
 .notes-cancel-btn {
-  background: #fff;
-  color: var(--secondary);
+  background: var(--btn-cancel-bg);
+  color: var(--btn-cancel-color);
   border: 1.2px solid var(--secondary);
   border-radius: var(--btn-radius);
   font-size: 1rem;
@@ -271,6 +330,10 @@
   padding: 13px 0 14px 0;
   letter-spacing: 0.1px;
   z-index: 10;
+}
+
+.dark-theme a {
+  color: var(--accent);
 }
 
 /* --- RESPONSIVE --- */

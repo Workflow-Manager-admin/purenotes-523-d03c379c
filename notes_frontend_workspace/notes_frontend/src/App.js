@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 
 /**
@@ -6,12 +6,52 @@ import "./App.css";
  * Features: Add, edit, delete, view, persist notes (localStorage), responsive layout, modern light theme.
  */
 
-// Color variables in CSS will be set in App.css, but we'll use them programmatically as well
 const COLORS = {
   accent: "#ffb300",
   primary: "#1976d2",
   secondary: "#424242",
 };
+
+// Theme-related logic (context for future extensibility)
+const THEME_KEY = "notes_theme";
+
+// PUBLIC_INTERFACE
+function useTheme() {
+  /** Hook to manage light/dark theme and persist choice in localStorage.
+   * Returns: [theme, toggleTheme]
+   * - theme: "light" | "dark"
+   * - toggleTheme: function to switch between light/dark
+   */
+  const getInitialTheme = () => {
+    const persisted = localStorage.getItem(THEME_KEY);
+    if (persisted) return persisted;
+    // Respect prefers-color-scheme
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  };
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-theme", theme === "dark");
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === "light" ? "dark" : "light";
+      localStorage.setItem(THEME_KEY, next);
+      return next;
+    });
+  }, []);
+
+  // Persist theme on change
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
+  return [theme, toggleTheme];
+}
 
 function generateID() {
   // Generates a unique string based on time and randomness.
@@ -160,18 +200,34 @@ function App() {
 
   // --- UI COMPONENT RENDER ---
 
+  // --- THEME HOOK ---
+  const [theme, toggleTheme] = useTheme();
+
   return (
-    <div className="notes-app-wrapper">
+    <div className={`notes-app-wrapper${theme === "dark" ? " dark-theme" : ""}`}>
       <header className="notes-header">
         <span className="notes-app-title" style={{ color: COLORS.primary }}>
           📝 PureNotes
         </span>
-        <button className="notes-add-btn" style={{ background: COLORS.accent, color: "#fff" }}
-          onClick={handleNewNote}
-          data-testid="add-note-btn"
-        >
-          + New Note
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+          <button
+            className="theme-toggle-btn"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={toggleTheme}
+          >
+            {/* Sun/Moon Icons: Pure SVG or Emoji, fallback to text */}
+            {theme === "dark"
+              ? <span aria-hidden="true" role="img">🌞</span>
+              : <span aria-hidden="true" role="img">🌙</span>}
+          </button>
+          <button className="notes-add-btn" style={{ background: COLORS.accent, color: "#fff" }}
+            onClick={handleNewNote}
+            data-testid="add-note-btn"
+          >
+            + New Note
+          </button>
+        </div>
       </header>
       <main className="notes-main">
         <aside className="notes-sidebar">
